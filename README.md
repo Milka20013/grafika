@@ -7,7 +7,7 @@ A programban általám készített modell(ek)t bemutató körültekintést szere
 2. blenderben procedurálisan generált textúrával ellátott modell
 3. a procedurális textúrának a felületi normálisát is tartalmazza a modell
 4. a modell csontokkal animált változata
-
-### Kiegészítés
+A modellek ezen kívül rendelkeznek egy "bounding box"-al is, melynek segítségével fókusz módba kerülhetnek.
+### Fókusz mód
 A programba lesz egy "fókusz mód" , ami egy adott modell kiválasztása esetén jön elő, ami minden más modellt eltűntet és a képernyő közepére teszi a modellt.
 A modell ebben a módban interaktálhatóva válik, tehát forgatható, nagyítható. 
