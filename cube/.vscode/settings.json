@@ -1,0 +1,13 @@
+{
+  "files.associations": {
+    "sdl_image.h": "c",
+    "load.h": "c",
+    "math.h": "c",
+    "model.h": "c",
+    "gl.h": "c",
+    "stdlib.h": "c",
+    "stdio.h": "c",
+    "sdl.h": "c"
+  },
+  "C_Cpp.errorSquiggles": "disabled"
+}
