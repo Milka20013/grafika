@@ -72,11 +72,25 @@ void fill_v(vec3 *vector, float x, float y, float z)
 	vector->z = z;
 }
 
+void fill_v_v(vec3 *vector, vec3 fill_with_v)
+{
+	vector->x = fill_with_v.x;
+	vector->y = fill_with_v.y;
+	vector->z = fill_with_v.z;
+}
+
 void add_to_v(vec3 *vector, float x, float y, float z)
 {
 	vector->x += x;
 	vector->y += y;
 	vector->z += z;
+}
+
+void multiply_v(vec3 *vector, float value)
+{
+	vector->x *= value;
+	vector->y *= value;
+	vector->z *= value;
 }
 
 void add_v_to_v(vec3 *vector1, vec3 vector2)

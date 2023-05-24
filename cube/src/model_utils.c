@@ -1,7 +1,5 @@
 #include "model_utils.h"
 
-#include <obj/load.h>
-#include <obj/draw.h>
 #include <dirent.h>
 #include <stdlib.h>
 #include <string.h>
@@ -76,10 +74,9 @@ void draw_models(Object *objects, int number_of_objects)
         glScalef(curr_trans->scale,
                  curr_trans->scale,
                  curr_trans->scale);
-        glRotatef(curr_trans->angle,
-                  curr_trans->rotation.x,
-                  curr_trans->rotation.y,
-                  curr_trans->rotation.z);
+        glRotatef(curr_trans->rotation_angles.x, 1, 0, 0);
+        glRotatef(curr_trans->rotation_angles.y, 0, 1, 0);
+        glRotatef(curr_trans->rotation_angles.z, 0, 0, 1);
         glBindTexture(GL_TEXTURE_2D, objects[i].texture_id);
         draw_model(objects[i].model);
         // reset the matrix

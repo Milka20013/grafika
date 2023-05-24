@@ -13,6 +13,7 @@ typedef struct Camera
     vec3 position;
     vec3 rotation;
     vec3 speed;
+    float global_speed;
     bool is_preview_visible;
 } Camera;
 
@@ -50,5 +51,10 @@ void set_camera_side_speed(Camera *camera, double speed);
  * Set the speed of up and down steps.
  */
 void set_camera_vertical_speed(Camera *camera, double speed);
+
+/**
+ * Multiplies the speed components by value
+ */
+void multiply_camera_speed(Camera *camera, float value);
 
 #endif /* CAMERA_H */

@@ -58,15 +58,24 @@ void min_v(float *x_min, float *y_min, float *z_min, float x, float y, float z);
 void max_v(float *x_min, float *y_min, float *z_min, float x, float y, float z);
 
 /*
-    Fill a vector3
+    Fill a vector3 with x,y,z values
 */
 void fill_v(vec3 *vector, float x, float y, float z);
+
+/*
+    Fill a vector3 with an other vector3
+*/
+void fill_v_v(vec3 *vector, vec3 fill_with_v);
 
 /*
     Add every coordinate to a vector
 */
 void add_to_v(vec3 *vector, float x, float y, float z);
 
+/*
+    Multiplies every coordinate of the vector by a number
+*/
+void multiply_v(vec3 *vector, float value);
 /*
     Add every coordinate of a vector to a vector
 */

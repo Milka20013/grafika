@@ -1,6 +1,8 @@
 #ifndef MODEL_UTILS_H
 #define MODEL_UTILS_H
 #include "object.h"
+#include <obj/load.h>
+#include <obj/draw.h>
 /**
  * Loads all the models and their names from assets/models folder to the objects array
  */

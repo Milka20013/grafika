@@ -75,6 +75,7 @@ void init_opengl()
 
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT1);
 }
 
 void reshape(GLsizei width, GLsizei height)
@@ -104,7 +105,7 @@ void reshape(GLsizei width, GLsizei height)
     glFrustum(
         -.08, .08,
         -.06, .06,
-        .1, 10);
+        .1, 50);
 }
 
 void handle_app_events(App *app)
@@ -124,8 +125,6 @@ void handle_app_events(App *app)
     float current_normalized_mouse_y = 0;
     int x;
     int y;
-
-    int index = -1;
     if (is_focus_active())
     {
         while (SDL_PollEvent(&event))
@@ -159,6 +158,18 @@ void handle_app_events(App *app)
                 case SDL_SCANCODE_N:
                     set_state_input(STATE_NONE);
                     break;
+                case SDL_SCANCODE_L:
+                    set_state_input(STATE_LIGHT);
+                    break;
+                case SDL_SCANCODE_BACKSPACE:
+                    reset_object_by_state(&object);
+                    break;
+                case SDL_SCANCODE_KP_PLUS:
+                    set_lighting_1(&(app->scene), 0.1, 0, 0, 0);
+                    break;
+                case SDL_SCANCODE_KP_MINUS:
+                    set_lighting_1(&(app->scene), -0.1, 0, 0, 0);
+                    break;
                 default:
                     break;
                 }
@@ -179,7 +190,7 @@ void handle_app_events(App *app)
                     float distance = p2_dist(previous_normalized_mouse_x, previous_normalized_mouse_y,
                                              current_normalized_mouse_x, current_normalized_mouse_y);
                     set_state_value(distance * sign(current_normalized_mouse_y - previous_normalized_mouse_y));
-                    update_object_by_state(&object);
+                    update_object_by_state(&object, &(app->scene));
                     previous_normalized_mouse_x = current_normalized_mouse_x;
                     previous_normalized_mouse_y = current_normalized_mouse_y;
                 }
@@ -220,6 +231,12 @@ void handle_app_events(App *app)
             case SDL_SCANCODE_E:
                 set_camera_vertical_speed(&(app->camera), -1);
                 break;
+            case SDL_SCANCODE_KP_PLUS:
+                set_lighting(0.1);
+                break;
+            case SDL_SCANCODE_KP_MINUS:
+                set_lighting(-0.1);
+                break;
             case SDL_SCANCODE_LCTRL:
                 if (SDL_ShowCursor(SDL_QUERY) == SDL_DISABLE)
                 {
@@ -241,7 +258,9 @@ void handle_app_events(App *app)
                         break;
                     }
                 }
-
+                break;
+            case SDL_SCANCODE_LSHIFT:
+                multiply_camera_speed(&(app->camera), 2.4f);
                 break;
             default:
                 break;
@@ -261,6 +280,9 @@ void handle_app_events(App *app)
             case SDL_SCANCODE_Q:
             case SDL_SCANCODE_E:
                 set_camera_vertical_speed(&(app->camera), 0);
+                break;
+            case SDL_SCANCODE_LSHIFT:
+                multiply_camera_speed(&(app->camera), 1.0f);
                 break;
             default:
                 break;
@@ -309,6 +331,7 @@ void update_app(App *app)
     double delta_time;
     static double previous_time;
     current_time = (double)SDL_GetTicks() / 1000;
+    // delta time might be equal to elapsed time
     delta_time = current_time - previous_time;
     previous_time = current_time;
     elapsed_time = current_time - app->uptime;

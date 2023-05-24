@@ -10,7 +10,8 @@ typedef struct Scene
     int object_count;
     Object *objects;
     Material material;
-
+    Object *lights;
+    int light_count;
 } Scene;
 
 /**
@@ -21,7 +22,12 @@ void init_scene(Scene *scene);
 /**
  * Set the lighting of the scene.
  */
-void set_lighting();
+void set_lighting(float value);
+
+/**
+ * Set the point light of the focus mode scene.
+ */
+void set_lighting_1(Scene *scene, float value, float x, float y, float z);
 
 /**
  * Set the current material.
@@ -36,7 +42,7 @@ void update_scene(Scene *scene, double delta_time, double current_time);
 /**
  * Render the scene objects.
  */
-void render_scene(const Scene *scene);
+void render_scene(Scene *scene);
 
 /**
  * Draw the origin of the world coordinate system.

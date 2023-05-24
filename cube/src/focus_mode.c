@@ -7,6 +7,7 @@
 Transform SAVED_OBJECT_TRANSFORM;
 Focus_Input_Data INPUT_DATA;
 int FOCUS_MODE = 0;
+float FOCUS_POINT_X = 5;
 
 void enter_focus_mode(Camera *camera, Scene *scene, int index_of_object, Focused_Object_Data *object)
 {
@@ -19,6 +20,13 @@ void enter_focus_mode(Camera *camera, Scene *scene, int index_of_object, Focused
     object->bounding_box = scene->objects[index_of_object].bounding_box;
     save_object_data(object);
     init_camera(camera);
+    FOCUS_POINT_X = 5;
+    float size_x = object->bounding_box->points[4].x - object->bounding_box->points[0].x;
+    if (size_x > FOCUS_POINT_X)
+    {
+        FOCUS_POINT_X = size_x;
+    }
+
     set_transform_position(object->transform, 5, 0, 0, object->bounding_box);
     for (int i = 0; i < scene->object_count; i++)
     {
@@ -42,22 +50,15 @@ void exit_focus_mode(Scene *scene, Focused_Object_Data *object)
 
 void save_object_data(Focused_Object_Data *object)
 {
-    fill_v(&(SAVED_OBJECT_TRANSFORM.position), object->transform->position.x, object->transform->position.y, object->transform->position.z);
-    fill_v(&(SAVED_OBJECT_TRANSFORM.rotation), object->transform->rotation.x, object->transform->rotation.y, object->transform->rotation.z);
-    SAVED_OBJECT_TRANSFORM.angle = object->transform->angle;
+    fill_v_v(&(SAVED_OBJECT_TRANSFORM.position), object->transform->position);
+    fill_v_v(&(SAVED_OBJECT_TRANSFORM.rotation_angles), object->transform->rotation_angles);
     SAVED_OBJECT_TRANSFORM.scale = object->transform->scale;
 }
 
 void load_object_data(Focused_Object_Data *object)
 {
-    set_transform_position(object->transform,
-                           SAVED_OBJECT_TRANSFORM.position.x, SAVED_OBJECT_TRANSFORM.position.y, SAVED_OBJECT_TRANSFORM.position.z,
-                           object->bounding_box);
-    set_transform_rotation(object->transform,
-                           SAVED_OBJECT_TRANSFORM.rotation.x,
-                           SAVED_OBJECT_TRANSFORM.rotation.y,
-                           SAVED_OBJECT_TRANSFORM.rotation.z,
-                           0);
+    set_transform_position_v(object->transform, SAVED_OBJECT_TRANSFORM.position, object->bounding_box);
+    set_transform_rotation_v(object->transform, SAVED_OBJECT_TRANSFORM.rotation_angles);
     set_transform_scale(object->transform, SAVED_OBJECT_TRANSFORM.scale);
 }
 
@@ -104,9 +105,28 @@ void update_state()
     }
 }
 
-void update_object_by_state(Focused_Object_Data *object)
+void reset_object_by_state(Focused_Object_Data *object)
+{
+    switch (INPUT_DATA.input)
+    {
+    case STATE_SCALE:
+        set_transform_scale(object->transform, 1);
+        break;
+    case STATE_ROTATE:
+        set_transform_rotation(object->transform, 0, 0, 0);
+        break;
+    case STATE_MOVE:
+        set_transform_position(object->transform, FOCUS_POINT_X, 0, 0, object->bounding_box);
+        break;
+    default:
+        break;
+    }
+}
+
+void update_object_by_state(Focused_Object_Data *object, Scene *scene)
 {
     static float scale = 1;
+    vec3 rotation_vector;
     switch (INPUT_DATA.input)
     {
     case STATE_SCALE:
@@ -114,10 +134,15 @@ void update_object_by_state(Focused_Object_Data *object)
         scale += INPUT_DATA.value;
         break;
     case STATE_ROTATE:
-        rotate_transform(object->transform, INPUT_DATA.norm_vec->x, INPUT_DATA.norm_vec->y, INPUT_DATA.norm_vec->z, INPUT_DATA.value * 180);
+        fill_v_v(&rotation_vector, *INPUT_DATA.vec);
+        multiply_v(&rotation_vector, 180);
+        rotate_transform_v(object->transform, rotation_vector);
         break;
     case STATE_MOVE:
-        translate_transform(object->transform, INPUT_DATA.vec->x, INPUT_DATA.vec->y, INPUT_DATA.vec->z, object->bounding_box);
+        translate_transform_v(object->transform, *INPUT_DATA.vec, object->bounding_box);
+        break;
+    case STATE_LIGHT:
+        set_lighting_1(scene, 0, INPUT_DATA.vec->x, INPUT_DATA.vec->y, INPUT_DATA.vec->z);
         break;
     default:
         break;

@@ -22,6 +22,7 @@ typedef enum focused_state_input
     STATE_ROTATE,
     STATE_MOVE,
     STATE_SCALE,
+    STATE_LIGHT,
     STATE_NONE
 } focused_state_input;
 
@@ -79,8 +80,13 @@ void set_state_value(float value);
 void update_state();
 
 /**
+ * Resets the selected input state to 0
+ */
+void reset_object_by_state(Focused_Object_Data *object);
+
+/**
  * Updates the object by the global focus state data
  */
-void update_object_by_state(Focused_Object_Data *object);
+void update_object_by_state(Focused_Object_Data *object, Scene *scene);
 
 #endif

@@ -24,10 +24,33 @@ void init_scene(Scene *scene)
     }
 
     // positioning the objects on a diagonal
+    float size_x;
+    float distance;
+    Box *box = malloc(sizeof(Box));
     for (int i = 0; i < object_count; i++)
     {
-        set_transform_position(scene->objects[i].transform, i * 2, i * 2, 0, scene->objects[i].bounding_box);
+        box = scene->objects[i].bounding_box;
+        size_x = box->points[4].x - box->points[0].x;
+        if (i < 1)
+        {
+            distance += size_x;
+            continue;
+        }
+        else
+        {
+            set_transform_position(scene->objects[i].transform, distance, 0, 0, scene->objects[i].bounding_box);
+        }
+        distance += size_x + 0.25;
     }
+
+    scene->lights = malloc(sizeof(Object));
+    scene->light_count = 1;
+    init_object(scene->lights);
+    load_model(scene->lights[0].model, "assets/lights/arrow.obj");
+    fill_object(scene->lights);
+
+    set_transform_position(scene->lights[0].transform, 5, 2, 3, scene->lights->bounding_box);
+    set_transform_rotation(scene->lights[0].transform, 90, 0, 0);
 
     scene->material.ambient.red = 0.0;
     scene->material.ambient.green = 0.0;
@@ -44,12 +67,14 @@ void init_scene(Scene *scene)
     scene->material.shininess = 0.0;
 }
 
-void set_lighting()
+void set_lighting(float value)
 {
-    // light0 is a global light
+    static float intensity = 1.0;
+    intensity += value;
+    // light0 is the global light
 
     float ambient_light[] = {0.0f, 0.0f, 0.0f, 1.0f};
-    float diffuse_light[] = {1.0f, 1.0f, 1.0, 1.0f};
+    float diffuse_light[] = {1.0f * intensity, 1.0f * intensity, 1.0 * intensity, 1.0f * intensity};
     float specular_light[] = {0.0f, 0.0f, 0.0f, 1.0f};
     float position[] = {0.0f, 0.0f, 10.0f, 1.0f};
 
@@ -57,6 +82,26 @@ void set_lighting()
     glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse_light);
     glLightfv(GL_LIGHT0, GL_SPECULAR, specular_light);
     glLightfv(GL_LIGHT0, GL_POSITION, position);
+}
+
+void set_lighting_1(Scene *scene, float value, float x, float y, float z)
+{
+    static float intensity = 1.0;
+    intensity += value;
+    // light1 is a directional light
+    translate_transform(scene->lights[0].transform, x, z, y, scene->lights[0].bounding_box);
+    float ambient_light[] = {0.0f, 0.0f, 0.0f, 1.0f};
+    float diffuse_light[] = {1.0f * intensity, 1.0f * intensity, 1.0 * intensity, 1.0f * intensity};
+    float specular_light[] = {0.0f, 0.0f, 0.0f, 1.0f};
+    float position[] = {scene->lights[0].transform->position.x,
+                        scene->lights[0].transform->position.y,
+                        scene->lights[0].transform->position.z,
+                        1.0f};
+
+    glLightfv(GL_LIGHT1, GL_AMBIENT, ambient_light);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuse_light);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, specular_light);
+    glLightfv(GL_LIGHT1, GL_POSITION, position);
 }
 
 void set_material(const Material *material)
@@ -87,14 +132,23 @@ void set_material(const Material *material)
 
 void update_scene(Scene *scene, double delta_time, double current_time)
 {
+    if (scene->object_count == delta_time)
+    {
+        if (scene->object_count == current_time)
+        {
+            // shut up compiler
+        }
+    }
 }
 
-void render_scene(const Scene *scene)
+void render_scene(Scene *scene)
 {
     set_material(&(scene->material));
-    set_lighting();
+    set_lighting(0);
+    set_lighting_1(scene, 0, 0, 0, 0);
     draw_origin();
     draw_models(scene->objects, scene->object_count);
+    draw_models(scene->lights, scene->light_count);
 }
 
 void draw_origin()
