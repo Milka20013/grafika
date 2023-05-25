@@ -12,6 +12,8 @@ typedef struct Scene
     Material material;
     Object *lights;
     int light_count;
+    GLuint help_texturef;
+    GLuint help_texturem;
 } Scene;
 
 /**
@@ -48,5 +50,10 @@ void render_scene(Scene *scene);
  * Draw the origin of the world coordinate system.
  */
 void draw_origin();
+
+/**
+ * Show help
+ */
+void show_texture_preview(Scene *scene, int is_focus_active);
 
 #endif /* SCENE_H */

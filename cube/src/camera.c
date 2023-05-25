@@ -86,29 +86,4 @@ void multiply_camera_speed(Camera *camera, float value)
     camera->global_speed = value;
 }
 
-void show_texture_preview()
-{
-    glDisable(GL_LIGHTING);
-    glDisable(GL_DEPTH_TEST);
-    glEnable(GL_COLOR_MATERIAL);
 
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-    glColor3f(1, 1, 1);
-
-    glBegin(GL_QUADS);
-    glTexCoord2f(0, 0);
-    glVertex3f(-1, 1, -3);
-    glTexCoord2f(1, 0);
-    glVertex3f(1, 1, -3);
-    glTexCoord2f(1, 1);
-    glVertex3f(1, -1, -3);
-    glTexCoord2f(0, 1);
-    glVertex3f(-1, -1, -3);
-    glEnd();
-
-    glDisable(GL_COLOR_MATERIAL);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_DEPTH_TEST);
-}

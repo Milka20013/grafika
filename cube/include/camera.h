@@ -57,4 +57,6 @@ void set_camera_vertical_speed(Camera *camera, double speed);
  */
 void multiply_camera_speed(Camera *camera, float value);
 
+
+
 #endif /* CAMERA_H */

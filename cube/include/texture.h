@@ -12,6 +12,10 @@ typedef GLubyte Pixel[3];
 void generate_textures(char *filename, int size, GLuint *texture_names);
 
 /**
+ * Loads a texture, and return the index of it
+ */
+GLuint load_texture(char *filename);
+/**
  * Loads all the textures from assets/textures and assigns it to the objects
  */
 void load_textures(Object *objects, int number_of_objects);

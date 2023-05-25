@@ -52,6 +52,10 @@ void init_scene(Scene *scene)
     set_transform_position(scene->lights[0].transform, 5, 2, 3, scene->lights->bounding_box);
     set_transform_rotation(scene->lights[0].transform, 90, 0, 0);
 
+    scene->help_texturef = load_texture("assets/textures/helpf.jpg");
+    scene->help_texturem = load_texture("assets/textures/helpm.jpg");
+
+
     scene->material.ambient.red = 0.0;
     scene->material.ambient.green = 0.0;
     scene->material.ambient.blue = 0.0;
@@ -168,4 +172,41 @@ void draw_origin()
     glVertex3f(0, 0, 1);
 
     glEnd();
+}
+
+void show_texture_preview(Scene *scene, int is_focus_active)
+{
+    glDisable(GL_LIGHTING);
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_COLOR_MATERIAL);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    glColor3f(1, 1, 1);
+
+    if (is_focus_active)
+    {
+        glBindTexture(GL_TEXTURE_2D, scene->help_texturef);
+    }
+    else
+    {
+        glBindTexture(GL_TEXTURE_2D, scene->help_texturem);
+    }
+    
+
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0);
+    glVertex3f(-2.2, 1.8, -3);
+    glTexCoord2f(1, 0);
+    glVertex3f(2.2, 1.8, -3);
+    glTexCoord2f(1, 1);
+    glVertex3f(2.2, -1.8, -3);
+    glTexCoord2f(0, 1);
+    glVertex3f(-2.2, -1.8, -3);
+    glEnd();
+
+    glDisable(GL_COLOR_MATERIAL);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_DEPTH_TEST);
 }

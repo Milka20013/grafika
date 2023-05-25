@@ -137,6 +137,9 @@ void handle_app_events(App *app)
                 case SDL_SCANCODE_Q:
                     exit_focus_mode(&(app->scene), &object);
                     break;
+                case SDL_SCANCODE_F1:
+                    app->camera.is_preview_visible = !app->camera.is_preview_visible;
+                break;
                 case SDL_SCANCODE_X:
                     set_state_xyz(STATE_X);
                     break;
@@ -212,6 +215,9 @@ void handle_app_events(App *app)
             {
             case SDL_SCANCODE_ESCAPE:
                 app->is_running = false;
+                break;
+            case SDL_SCANCODE_F1:
+                app->camera.is_preview_visible = !app->camera.is_preview_visible;
                 break;
             case SDL_SCANCODE_W:
                 set_camera_speed(&(app->camera), 1);
@@ -353,7 +359,7 @@ void render_app(App *app)
 
     if (app->camera.is_preview_visible)
     {
-        // show_texture_preview();
+        show_texture_preview(&(app->scene), is_focus_active());
     }
 
     SDL_GL_SwapWindow(app->window);
